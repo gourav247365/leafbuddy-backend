@@ -1,6 +1,6 @@
 import { User } from "../models/user.model.js"
 import { asyncHandler } from "../../utils/asyncHandler.js"
-import { sendMail } from "../../utils/mailer.js"
+import { resend } from "../../utils/resendMailer.js"
 import { Otp } from "../models/otp.model.js"
 import { generateOtp } from "../../utils/generateOtp.js"
 import { ApiError } from "../../utils/ApiError.js"
@@ -43,21 +43,45 @@ const sendEmailVerificationCode = asyncHandler(async (req, res) => {
   const verificationCode = generateOtp(6)
   const otp = await Otp.create({ email, code: verificationCode, otpType })
 
-  const data = await sendMail({
+   const {error,data} = await resend.emails.send({
+    from: '"LeafBuddy" <onboarding@resend.dev>',
     to: email,
     subject: "Email Verification",
-    text: `
-    🌱 WELCOME TO LEAF BUDDY 🌱
-    Here is your Verification Code: ${verificationCode}
 
-    This one time password is only valid for 10 minutes
+    html: `
+    <div style="text-align:center;">
+      <img 
+        src="https://res.cloudinary.com/dmxjulnzo/image/upload/v1770796115/lb_cnlzt4.png"
+        alt="LeafBuddy"
+        width="120"
+        height="120"
+        style="border-radius:50%; margin-bottom:16px;"
+      />
+
+      <h2>🌱 WELCOME TO LEAF BUDDY 🌱</h2>
+      <h3>Your plant care companion</h3>
+      <p>Here is your Verification Code: ${verificationCode}</p>
+      <p>This one time password is only valid for 10 minutes</p>
+    </div>
+  `,
+
+    text: `
+     🌱 WELCOME TO LEAF BUDDY 🌱
+     Here is your Verification Code: ${verificationCode}
+     This one time password is only valid for 10 minutes
     `
   })
+
+  if(error) {
+    console.log(error)
+    throw new ApiError(401, "Error Sending Email")
+    
+  }
 
   return res
     .status(200)
     .json({
-      succes: true,
+      success: true,
       message: "Verification Code Sent Successfully",
     })
 })
@@ -108,7 +132,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
 
   const { email, password } = req.body
-  let user = await User.findOne({ email })
+  let user = await User.findOne({ email }).select("-password -refreshToken")
 
   if (!user) {
     throw new ApiError(404, "User does not exist for entered Email")
@@ -194,7 +218,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   console.log(incomingRefreshToken);
 
   const userId = decodedRereshToken._id
-  const user = await User.findById(userId).select("-password")
+  const user = await User.findById(userId).select("-password -refreshToken")
 
   if (!user) {
     throw new ApiError(403, "Invalid Access Token")

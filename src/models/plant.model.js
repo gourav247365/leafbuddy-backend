@@ -6,6 +6,10 @@ const PlantSchema = new Schema(
       type: String,
       required: true,
     },
+    scientificName: {
+      type: String,
+      required: true,
+    },
     searchType: {
       type: String,
       enum: ["image", "text"],
@@ -13,6 +17,8 @@ const PlantSchema = new Schema(
     },
     image: {
       type: String,
+      required: true,
+      default: 'https://res.cloudinary.com/dmxjulnzo/image/upload/v1770798437/placeholder-image_xrialk.png'
     },
     regionalNames: {
       type: String,
@@ -20,7 +26,8 @@ const PlantSchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
+      index: true
     },
     title: {
       type: String,
@@ -37,6 +44,9 @@ const PlantSchema = new Schema(
       type: String,
       required: true
     }
+  },
+  {
+    timestamps: true
   }
 )
 

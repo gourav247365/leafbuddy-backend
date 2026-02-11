@@ -132,7 +132,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
 
   const { email, password } = req.body
-  let user = await User.findOne({ email }).select("-password -refreshToken")
+  let user = await User.findOne({ email }).select("-refreshToken")
 
   if (!user) {
     throw new ApiError(404, "User does not exist for entered Email")
@@ -143,6 +143,7 @@ const login = asyncHandler(async (req, res) => {
   if (!isCorrect) {
     throw new ApiError(401, "Incorrect Password")
   }
+  user.password = null
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
 

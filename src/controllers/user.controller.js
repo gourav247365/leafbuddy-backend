@@ -43,7 +43,7 @@ const sendEmailVerificationCode = asyncHandler(async (req, res) => {
   const verificationCode = generateOtp(6)
   const otp = await Otp.create({ email, code: verificationCode, otpType })
 
-   const {error,data} = await resend.emails.send({
+  const { error, data } = await resend.emails.send({
     from: '"LeafBuddy" <onboarding@resend.dev>',
     to: email,
     subject: "Email Verification",
@@ -72,11 +72,11 @@ const sendEmailVerificationCode = asyncHandler(async (req, res) => {
     `
   })
 
-  if(error) {
+  if (error) {
     console.log(error)
     throw new ApiError(401, "Error Sending Email")
-    
   }
+  console.log(data)
 
   return res
     .status(200)

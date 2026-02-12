@@ -219,7 +219,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   console.log(incomingRefreshToken);
 
   const userId = decodedRereshToken._id
-  const user = await User.findById(userId).select("-password -refreshToken")
+  const user = await User.findById(userId).select("-password")
 
   if (!user) {
     throw new ApiError(403, "Invalid Access Token")

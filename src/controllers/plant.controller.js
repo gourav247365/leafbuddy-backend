@@ -79,7 +79,7 @@ const createPlantPost = asyncHandler(async (req, res) => {
       throw new ApiError(401, "Something Went Wrong while Uploading the File")
     }
 
-    plant.image = uploadedImage.url
+    plant.image = uploadedImage.secure_url
   }
 
   const plantPost = await Plant.create(plant)

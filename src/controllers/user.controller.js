@@ -216,7 +216,6 @@ const resetPassword = asyncHandler(async (req, res) => {
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken = req.header("Authorization").replace("Bearer ", "")
   const decodedRereshToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
-  console.log(incomingRefreshToken);
 
   const userId = decodedRereshToken._id
   const user = await User.findById(userId).select("-password")

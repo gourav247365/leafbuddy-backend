@@ -118,7 +118,7 @@ const getSavedPlantPosts = asyncHandler(async (req, res) => {
 
   const userId = req.user?._id
   
-  const saved = await Plant.find({ owner: userId })
+  const saved = await Plant.find({ owner: userId }).sort({createdAt: -1})
 
   return res
     .status(200)

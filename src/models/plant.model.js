@@ -18,7 +18,7 @@ const PlantSchema = new Schema(
     image: {
       type: String,
       required: true,
-      default: 'https://res.cloudinary.com/dmxjulnzo/image/upload/v1770798437/placeholder-image_xrialk.png'
+      default: 'https://res.cloudinary.com/dmxjulnzo/image/upload/v1775733095/placeholder-image_vjxhuk.png'
     },
     regionalNames: {
       type: String,

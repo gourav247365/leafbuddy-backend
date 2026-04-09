@@ -102,8 +102,10 @@ const deletePlantPost = asyncHandler(async (req, res) => {
   if (!deletedPost) {
     throw new ApiError(401, "Sothething Went Wrong while Deleting PlantInfo Post")
   }
-
-  deleteFromCloudinary(deletedPost.image)
+  
+  if(deletedPost.searchType === "image") {
+    deleteFromCloudinary(deletedPost.image)
+  }
 
   return res
     .status(200)
